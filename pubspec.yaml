@@ -1,0 +1,52 @@
+name: todo_app
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.1 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.5
+  flutter_bloc: ^8.1.1
+  equatable: ^2.0.5
+  dartz: ^0.10.1
+  flutter_local_notifications: ^9.9.1
+  workmanager: ^0.5.0
+  get_it: ^7.2.0
+  sqflite: ^2.0.3+1
+  flutter_native_timezone: ^2.0.0
+  intl: ^0.17.0
+  uuid: ^3.0.6
+  hexcolor: ^2.0.7
+  path: any
+  like_button: ^2.0.4
+  get: ^4.6.5
+  badges: ^2.0.3
+  audioplayers: any
+  file_picker: any
+  notifications_listener_service:
+    path: packages/notifications_listener_service/
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+  flutter_app_name: ^0.1.1
+  flutter_launcher_icons: ^0.10.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/todo_icon.png"
+  adaptive_icon_forground: 'assets/images/logo_foreground.png'
+
+flutter_app_name:
+  name: "TODO APP"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
