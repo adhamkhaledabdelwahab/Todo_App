@@ -11,9 +11,6 @@ import 'package:todo_app/src/presentation/pages/schedule_page/scheduled_task_scr
 import 'package:todo_app/src/presentation/pages/splash_page/splash_screen.dart';
 import 'package:todo_app/src/presentation/pages/task_page/task_screen.dart';
 
-//TODO refractor ui widgets and separate each one
-//TODO schedule notification based on month day number so even if day was 31 and next is 30 or 29 it shout only notify on last day on month
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
