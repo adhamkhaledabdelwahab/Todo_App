@@ -146,7 +146,6 @@ Future<void> init() async {
 Future<void> onNotificationStateChanges(NotificationEvent? evt) async {
   try {
     debugPrint("Notification Listener Service CallBackMethod Start");
-    debugPrint("Notification Listener Service State: ${evt?.state}");
     if (evt?.state == NotificationState.post) {
       TaskDatabaseDataSource dataSource = await _dbDataSource();
       TaskModel task = await _fetchSelectedTask(dataSource, evt!.id!);

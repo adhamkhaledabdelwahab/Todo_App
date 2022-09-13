@@ -2,14 +2,8 @@ const splashScreenRoute = '/';
 
 const boardScreenRoute = '/Board';
 
-const createTaskScreenRoute = '/Board/CreateTask';
+const createTaskScreenRoute = '/CreateTask';
 
-const scheduledTasksScreenRoute = '/Board/ScheduledTasks';
+const scheduledTasksScreenRoute = '/ScheduledTasks';
 
-const taskScreenRouteFromBoard = '/Board/Task';
-
-const taskScreenRouteFromScheduled = '/Board/ScheduledTasks/Task';
-
-const taskScreenRouteFromCreateTask = '/Board/CreateTask/Task';
-
-const taskScreenRouteFromTask = '/Board/Task/Task';
+const taskScreenRoute = '/Task';

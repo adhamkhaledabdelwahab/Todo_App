@@ -9,10 +9,11 @@ Future<void> onAppResumeFromTaskNotificationSelect(
 ) async {
   final task = AppBloc.get(context).appLaunchTask;
   if (task != null) {
-    if (route == taskScreenRouteFromTask) {
-      Get.offAndToNamed(
-        route,
+    if (Get.currentRoute == taskScreenRoute) {
+      Get.offNamed(
+        taskScreenRoute,
         arguments: task,
+        preventDuplicates: false,
       );
     } else {
       Get.toNamed(

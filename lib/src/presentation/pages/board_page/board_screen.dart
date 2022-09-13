@@ -25,16 +25,28 @@ class _BoardScreenState extends State<BoardScreen> {
     BoardBloc.get(context).add(BoardFetchUnCompletedTasks());
     BoardBloc.get(context).add(BoardFetchFavouriteTasks());
     BoardBloc.get(context).add(BoardFetchAllNotifications());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (AppBloc.get(context).appLaunchTask != null) {
+        onAppResumeFromTaskNotificationSelect(
+          taskScreenRoute,
+          context,
+        ).then(
+          (value) => AppBloc.get(context).add(
+            AppUpdateAppLaunchTaskEvent(null),
+          ),
+        );
+      }
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BoardBloc, BoardState>(
+    return BlocListener<AppBloc, AppState>(
       listener: (context, state) {
         if (AppBloc.get(context).appLaunchTask != null) {
           onAppResumeFromTaskNotificationSelect(
-            taskScreenRouteFromBoard,
+            taskScreenRoute,
             context,
           ).then(
             (value) => AppBloc.get(context).add(
@@ -42,78 +54,82 @@ class _BoardScreenState extends State<BoardScreen> {
             ),
           );
         }
-        debugPrint('$state');
-        switch (state.runtimeType) {
-          case BoardLoadingState:
-            Get.dialog(
-              DialogWidget(
-                message: (state as BoardLoadingState).loadingMessage!,
-                isError: false,
-              ),
-              barrierDismissible: false,
-            );
-            break;
-          case BoardErrorState:
-            Get.dialog(
-              DialogWidget(
-                message: (state as BoardErrorState).errMessage,
-                isError: true,
-              ),
-              barrierDismissible: false,
-            );
-            break;
-          case BoardLoadedState:
-            Get.back();
-            break;
-        }
       },
-      builder: (context, state) {
-        return DefaultTabController(
-          length: tabsText.length,
-          child: Scaffold(
-            appBar: const PreferredSize(
-              preferredSize: Size.fromHeight(70),
-              child: MyAppBar(
-                text: 'Board',
-                isBoardScreen: true,
+      child: BlocConsumer<BoardBloc, BoardState>(
+        listener: (context, state) {
+          debugPrint('$state');
+          switch (state.runtimeType) {
+            case BoardLoadingState:
+              Get.dialog(
+                DialogWidget(
+                  message: (state as BoardLoadingState).loadingMessage!,
+                  isError: false,
+                ),
+                barrierDismissible: false,
+              );
+              break;
+            case BoardErrorState:
+              Get.dialog(
+                DialogWidget(
+                  message: (state as BoardErrorState).errMessage,
+                  isError: true,
+                ),
+                barrierDismissible: false,
+              );
+              break;
+            case BoardLoadedState:
+              Get.back();
+              break;
+          }
+        },
+        builder: (context, state) {
+          return DefaultTabController(
+            length: tabsText.length,
+            child: Scaffold(
+              appBar: const PreferredSize(
+                preferredSize: Size.fromHeight(70),
+                child: MyAppBar(
+                  text: 'Board',
+                  isBoardScreen: true,
+                ),
               ),
-            ),
-            body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Column(
-                  children: [
-                    const BoardTabBar(),
-                    Container(
-                      width: double.infinity,
-                      height: 0.8,
-                      color: Colors.grey,
-                    ),
-                    const BoardTabBarView(),
-                    AppButton(
-                      text: 'Add a task',
-                      onPress: () => Get.toNamed(
-                        createTaskScreenRoute,
-                      )!
-                          .then(
-                        (value) {
-                          if (value != null) {
-                            BoardBloc.get(context).add(
-                              BoardUpdateTasksAfterCreate(
-                                task: value as TaskModel,
-                              ),
-                            );
-                          }
-                        },
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Column(
+                    children: [
+                      const BoardTabBar(),
+                      Container(
+                        width: double.infinity,
+                        height: 0.8,
+                        color: Colors.grey,
                       ),
-                    ),
-                  ],
+                      const BoardTabBarView(),
+                      AppButton(
+                        text: 'Add a task',
+                        onPress: () => Get.toNamed(
+                          createTaskScreenRoute,
+                        )!
+                            .then(
+                          (value) {
+                            if (value != null) {
+                              BoardBloc.get(context).add(
+                                BoardUpdateTasksAfterCreate(
+                                  task: value as TaskModel,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

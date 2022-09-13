@@ -25,7 +25,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       listener: (context, state) {
         if (AppBloc.get(context).appLaunchTask != null) {
           onAppResumeFromTaskNotificationSelect(
-            taskScreenRouteFromCreateTask,
+            taskScreenRoute,
             context,
           ).then(
             (value) => AppBloc.get(context).add(

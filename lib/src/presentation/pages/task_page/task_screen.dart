@@ -9,9 +9,7 @@ import 'package:todo_app/src/presentation/bloc/app_bloc/app_bloc.dart';
 import 'package:todo_app/src/presentation/widgets/task_page_widgets/task_field_info_widget.dart';
 
 class TaskScreen extends StatefulWidget {
-  const TaskScreen({Key? key, required this.task}) : super(key: key);
-
-  final TaskModel task;
+  const TaskScreen({Key? key}) : super(key: key);
 
   @override
   State<TaskScreen> createState() => _TaskScreenState();
@@ -20,11 +18,12 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
+    TaskModel task = ModalRoute.of(context)!.settings.arguments as TaskModel;
     return BlocListener<AppBloc, AppState>(
       listener: (context, state) {
         if (AppBloc.get(context).appLaunchTask != null) {
           onAppResumeFromTaskNotificationSelect(
-            taskScreenRouteFromTask,
+            taskScreenRoute,
             context,
           ).then(
             (value) => AppBloc.get(context).add(
@@ -80,65 +79,64 @@ class _TaskScreenState extends State<TaskScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: taskColors[widget.task.color],
+                    color: taskColors[task.color],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TaskFieldInfo(
                         iconData: Icons.text_format,
-                        subtitle: widget.task.title,
+                        subtitle: task.title,
                         title: 'Title',
                       ),
-                      widget.task.description.isNotEmpty
+                      task.description.isNotEmpty
                           ? TaskFieldInfo(
                               iconData: Icons.text_format,
-                              subtitle: widget.task.description,
+                              subtitle: task.description,
                               title: 'Description',
                             )
                           : Container(),
                       TaskFieldInfo(
                         iconData: Icons.calendar_today_outlined,
-                        subtitle: widget.task.date,
+                        subtitle: task.date,
                         title: 'Date',
                       ),
                       TaskFieldInfo(
                         iconData: Icons.access_time,
-                        subtitle: widget.task.startTime,
+                        subtitle: task.startTime,
                         title: 'Start Time',
                       ),
                       TaskFieldInfo(
                         iconData: Icons.access_time,
-                        subtitle: widget.task.endTime,
+                        subtitle: task.endTime,
                         title: 'End Time',
                       ),
                       TaskFieldInfo(
-                        iconData: widget.task.isFavourite == 1
+                        iconData: task.isFavourite == 1
                             ? Icons.favorite_outlined
                             : Icons.favorite_outline,
-                        subtitle: '${widget.task.isFavourite == 1}',
+                        subtitle: '${task.isFavourite == 1}',
                         title: 'Favourite',
                       ),
                       TaskFieldInfo(
-                        iconData: widget.task.isCompleted == 0
+                        iconData: task.isCompleted == 0
                             ? Icons.downloading
                             : Icons.download_done,
-                        subtitle: widget.task.isCompleted == 1
-                            ? 'Completed'
-                            : 'Uncompleted',
+                        subtitle:
+                            task.isCompleted == 1 ? 'Completed' : 'Uncompleted',
                         title: 'Task State',
                       ),
                       TaskFieldInfo(
-                        iconData: widget.task.isCompleted == 0
+                        iconData: task.isCompleted == 0
                             ? Icons.downloading
                             : Icons.download_done,
-                        subtitle: getRepeat(widget.task.repeat),
+                        subtitle: getRepeat(task.repeat),
                         title: 'Task Repeat',
                       ),
                       TaskFieldInfo(
                         iconData: Icons.audio_file_outlined,
-                        subtitle: widget.task.audioPath.isNotEmpty
-                            ? widget.task.audioPath.split("/").last
+                        subtitle: task.audioPath.isNotEmpty
+                            ? task.audioPath.split("/").last
                             : "No Sound Selected",
                         title: 'Task Notification Sound',
                       ),

@@ -145,7 +145,7 @@ class NotificationListView extends StatelessWidget {
                                             );
                                           }
                                           Get.toNamed(
-                                            taskScreenRouteFromBoard,
+                                            taskScreenRoute,
                                             arguments:
                                                 board.allTasks.firstWhere(
                                               (element) =>

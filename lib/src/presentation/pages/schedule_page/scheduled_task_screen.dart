@@ -21,7 +21,7 @@ class _ScheduledTasksScreenState extends State<ScheduledTasksScreen> {
       listener: (context, state) {
         if (AppBloc.get(context).appLaunchTask != null) {
           onAppResumeFromTaskNotificationSelect(
-            taskScreenRouteFromScheduled,
+            taskScreenRoute,
             context,
           ).then(
             (value) => AppBloc.get(context).add(

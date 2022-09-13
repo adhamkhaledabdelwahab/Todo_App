@@ -123,7 +123,7 @@ class TaskListItem extends StatelessWidget {
       contentPadding:
           const EdgeInsets.only(left: 20, right: 10, top: 10, bottom: 10),
       onTap: () => Get.toNamed(
-        taskScreenRouteFromBoard,
+        taskScreenRoute,
         arguments: task,
       ),
       leading: SizedBox(

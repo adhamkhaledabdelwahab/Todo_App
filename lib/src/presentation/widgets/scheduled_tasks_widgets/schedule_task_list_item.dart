@@ -20,7 +20,7 @@ class TaskListItem extends StatelessWidget {
       width: double.infinity,
       child: ListTile(
         onTap: () => Get.toNamed(
-          taskScreenRouteFromScheduled,
+          taskScreenRoute,
           arguments: task,
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:todo_app/src/core/routes/routes.dart';
 import 'package:todo_app/src/core/utils/isolates_update.dart';
-import 'package:todo_app/src/data/models/task_model.dart';
 import 'package:todo_app/src/injection_container.dart';
 import 'package:todo_app/src/presentation/bloc/bloc.dart';
 import 'package:todo_app/src/presentation/pages/add_task_page/add_task_screen.dart';
@@ -42,37 +41,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.cyan,
         ),
-        initialRoute: '/',
-        onGenerateRoute: (setting) {
-          String route = setting.name!;
-          switch (route) {
-            case splashScreenRoute:
-              return MaterialPageRoute(
-                builder: (_) => const SplashScreen(),
-              );
-            case boardScreenRoute:
-              return MaterialPageRoute(
-                builder: (_) => const BoardScreen(),
-              );
-            case createTaskScreenRoute:
-              return MaterialPageRoute(
-                builder: (_) => const AddTaskScreen(),
-              );
-            case scheduledTasksScreenRoute:
-              return MaterialPageRoute(
-                builder: (_) => const ScheduledTasksScreen(),
-              );
-            case taskScreenRouteFromBoard:
-            case taskScreenRouteFromScheduled:
-            case taskScreenRouteFromCreateTask:
-            case taskScreenRouteFromTask:
-              TaskModel taskEntity = setting.arguments as TaskModel;
-              return MaterialPageRoute(
-                builder: (_) => TaskScreen(task: taskEntity),
-              );
-            default:
-              return null;
-          }
+        initialRoute: splashScreenRoute,
+        routes: {
+          splashScreenRoute: (_) => const SplashScreen(),
+          boardScreenRoute: (_) => const BoardScreen(),
+          createTaskScreenRoute: (_) => const AddTaskScreen(),
+          taskScreenRoute: (_) => const TaskScreen(),
+          scheduledTasksScreenRoute: (_) => const ScheduledTasksScreen(),
         },
       ),
     );
