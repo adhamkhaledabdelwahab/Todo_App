@@ -32,7 +32,7 @@ class _BoardScreenState extends State<BoardScreen> {
           context,
         ).then(
           (value) => AppBloc.get(context).add(
-            AppUpdateAppLaunchTaskEvent(null),
+            AppUpdateSelectedTaskNotificationEvent(null),
           ),
         );
       }
@@ -50,7 +50,7 @@ class _BoardScreenState extends State<BoardScreen> {
             context,
           ).then(
             (value) => AppBloc.get(context).add(
-              AppUpdateAppLaunchTaskEvent(null),
+              AppUpdateSelectedTaskNotificationEvent(null),
             ),
           );
         }

@@ -1,11 +1,11 @@
 package kh.ad.notifications_listener_service.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
@@ -47,6 +47,23 @@ public class NotificationServiceMethodCallHandler implements MethodChannel.Metho
                 try {
                     Map<String, Object> map = DeviceInfoModel.getDeviceInfo();
                     result.success(map);
+                } catch (Exception e) {
+                    result.error(String.valueOf(e.hashCode()), e.getMessage(), null);
+                }
+                break;
+            case "registerNotificationCallback":
+                try {
+                    if (call.arguments != null) {
+                        long callback = (long) call.arguments;
+                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("NotificationCallback", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putLong("OnReceiveNotification", callback);
+                        editor.apply();
+                        result.success(true);
+                    } else {
+                        String errMessage = "Callback Method Can't Be Null";
+                        result.error("", errMessage, null);
+                    }
                 } catch (Exception e) {
                     result.error(String.valueOf(e.hashCode()), e.getMessage(), null);
                 }

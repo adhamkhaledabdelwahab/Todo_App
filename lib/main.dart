@@ -26,26 +26,41 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => serviceLocator<AppBloc>(),
+          create: (_) => serviceLocator<AppBloc>()
+            ..add(
+              AppUpdateAppLaunchTaskEvent(),
+            ),
         ),
         BlocProvider(
           create: (_) => serviceLocator<BoardBloc>(),
         ),
       ],
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'TODO App',
-        theme: ThemeData(
-          primarySwatch: Colors.cyan,
-        ),
-        initialRoute: splashScreenRoute,
-        routes: {
-          splashScreenRoute: (_) => const SplashScreen(),
-          boardScreenRoute: (_) => const BoardScreen(),
-          createTaskScreenRoute: (_) => const AddTaskScreen(),
-          taskScreenRoute: (_) => const TaskScreen(),
-          scheduledTasksScreenRoute: (_) => const ScheduledTasksScreen(),
+      child: BlocListener<AppBloc, AppState>(
+        listener: (context, state) {
+          debugPrint("$state");
+          if (state is AppUpdateAppLaunchTaskState) {
+            AppBloc.get(context).add(
+              AppMarkAppLaunchTaskNotificationAsReadEvent(
+                state.id,
+              ),
+            );
+          }
         },
+        child: GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'TODO App',
+          theme: ThemeData(
+            primarySwatch: Colors.cyan,
+          ),
+          initialRoute: splashScreenRoute,
+          routes: {
+            splashScreenRoute: (_) => const SplashScreen(),
+            boardScreenRoute: (_) => const BoardScreen(),
+            createTaskScreenRoute: (_) => const AddTaskScreen(),
+            taskScreenRoute: (_) => const TaskScreen(),
+            scheduledTasksScreenRoute: (_) => const ScheduledTasksScreen(),
+          },
+        ),
       ),
     );
   }

@@ -10,7 +10,6 @@ import kh.ad.notifications_listener_service.services.NotificationListenerService
 import kh.ad.notifications_listener_service.utils.NotificationServicePermissionUtils;
 
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
-    private final String TAG = "NotificationBroadcastReceiver";
 
     @SuppressLint("LongLogTag")
     @Override
@@ -22,6 +21,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                 context.startService(intent1);
             }
         } else {
+            String TAG = "NotificationBroadcastReceiver";
             Log.i(TAG, intent.getAction());
         }
     }

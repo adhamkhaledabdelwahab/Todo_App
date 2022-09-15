@@ -11,57 +11,29 @@ import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
-import kh.ad.notifications_listener_service.NotificationsListenerServicePlugin;
 import kh.ad.notifications_listener_service.models.NotificationModel;
 import kh.ad.notifications_listener_service.utils.NotificationServiceFlutterEngineUtils;
-import kh.ad.notifications_listener_service.utils.NotificationServiceMethodCallHandler;
 
 @SuppressLint("LongLogTag")
 public class NotificationListenerService
         extends android.service.notification.NotificationListenerService {
     private final String TAG = "NotificationListenerService";
-    private Context mContext;
     private Handler handler;
     private MethodChannel onNotificationChannel;
-    private MethodChannel nativeMethodsChannel;
-    private NotificationServiceMethodCallHandler methodCallHandler;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = this;
+        Context mContext = this;
         handler = new Handler(Looper.getMainLooper());
-        FlutterEngine engine = NotificationServiceFlutterEngineUtils.updateEngine(mContext,
-                Boolean.TRUE.equals(NotificationsListenerServicePlugin.isAppRunning.getValue()));
-        updateServiceChannel(engine);
-        NotificationsListenerServicePlugin.isAppRunning.observeForever(this::onAppStateChange);
-        Log.i(TAG, "On Service Created");
-    }
-
-    private void onAppStateChange(boolean state) {
-        if (!state) {
-            try {
-                FlutterEngine engine = NotificationServiceFlutterEngineUtils.updateEngine(mContext, false);
-                updateServiceChannel(engine);
-                methodCallHandler = new NotificationServiceMethodCallHandler(mContext, TAG);
-                nativeMethodsChannel.setMethodCallHandler(methodCallHandler);
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
-    }
-
-    private void updateServiceChannel(FlutterEngine engine) {
+        FlutterEngine engine = NotificationServiceFlutterEngineUtils.updateEngine(mContext);
         String RUN_DART_CHANNEL_NAME = "notifications_listener_service/RUN_DART_BACKGROUND_METHOD";
         onNotificationChannel = new MethodChannel(
                 engine.getDartExecutor().getBinaryMessenger(),
                 RUN_DART_CHANNEL_NAME
         );
-        String RUN_NATIVE_CHANNEL_NAME = "notifications_listener_service/RUN_NATIVE_BACKGROUND_METHOD";
-        nativeMethodsChannel = new MethodChannel(
-                engine.getDartExecutor().getBinaryMessenger(),
-                RUN_NATIVE_CHANNEL_NAME
-        );
+        Log.i(TAG, "On Service Created");
+
     }
 
 
@@ -90,7 +62,6 @@ public class NotificationListenerService
     private void onNotificationStateChange(
             StatusBarNotification sbn, String logMessage, String methodName) {
         try {
-            //TODO fix app doing much work
             handler.post(() -> {
                 String state = "";
                 if (logMessage.contains("Removed")) state = "remove";
@@ -107,9 +78,8 @@ public class NotificationListenerService
 
     @Override
     public void onDestroy() {
-        nativeMethodsChannel.setMethodCallHandler(null);
-        nativeMethodsChannel = null;
-        methodCallHandler = null;
+        handler = null;
+        onNotificationChannel = null;
         Log.i(TAG, "On Service Destroyed");
         super.onDestroy();
     }

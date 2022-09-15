@@ -27,7 +27,7 @@ class _TaskScreenState extends State<TaskScreen> {
             context,
           ).then(
             (value) => AppBloc.get(context).add(
-              AppUpdateAppLaunchTaskEvent(null),
+              AppUpdateSelectedTaskNotificationEvent(null),
             ),
           );
         }

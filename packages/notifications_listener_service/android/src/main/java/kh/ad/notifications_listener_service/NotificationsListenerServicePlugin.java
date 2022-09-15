@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodChannel;
-import kh.ad.notifications_listener_service.utils.NotificationServiceFlutterEngineUtils;
 import kh.ad.notifications_listener_service.utils.NotificationServiceMethodCallHandler;
 
 /**
@@ -17,31 +16,26 @@ import kh.ad.notifications_listener_service.utils.NotificationServiceMethodCallH
  */
 @SuppressLint("LongLogTag")
 public class NotificationsListenerServicePlugin implements FlutterPlugin {
-    public static final MutableLiveData<Boolean> isAppRunning = new MutableLiveData<>();
     private MethodChannel channel;
-    private Context mContext;
     private NotificationServiceMethodCallHandler handler;
     private final String TAG = "NotificationsListenerServicePlugin";
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        mContext = flutterPluginBinding.getApplicationContext();
+        Context mContext = flutterPluginBinding.getApplicationContext();
         String FOREGROUND_METHOD = "notifications_listener_service/RUN_NATIVE_FOREGROUND_METHOD";
-        channel = new MethodChannel(
-                flutterPluginBinding.getBinaryMessenger(), FOREGROUND_METHOD);
-        NotificationServiceFlutterEngineUtils.cacheEngine(flutterPluginBinding.getFlutterEngine());
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), FOREGROUND_METHOD);
         handler = new NotificationServiceMethodCallHandler(mContext, TAG);
         channel.setMethodCallHandler(handler);
-        isAppRunning.postValue(true);
         Log.i(TAG, "On Attached To Engine");
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        isAppRunning.postValue(false);
         channel.setMethodCallHandler(null);
         channel = null;
         handler = null;
         Log.i(TAG, "On Detached From Engine");
     }
+
 }

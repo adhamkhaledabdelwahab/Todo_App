@@ -15,4 +15,20 @@ class AppInitializingErrorState extends AppState {
   AppInitializingErrorState({required this.message});
 }
 
-class AppUpdateAppLaunchTaskState extends AppState {}
+class AppUpdateAppLaunchTaskState extends AppState {
+  final int? id;
+
+  AppUpdateAppLaunchTaskState(this.id);
+}
+
+class AppUpdateSelectedTaskNotificationState extends AppState {}
+
+class AppMarkSelectedTaskNotificationAsReadLoadingState extends AppState {}
+
+class AppMarkSelectedTaskNotificationAsReadLoadedState extends AppState {}
+
+class AppMarkSelectedTaskNotificationAsReadLoadingErrorState extends AppState {
+  final String message;
+
+  AppMarkSelectedTaskNotificationAsReadLoadingErrorState(this.message);
+}

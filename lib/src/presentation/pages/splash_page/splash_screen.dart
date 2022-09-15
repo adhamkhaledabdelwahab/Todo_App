@@ -24,7 +24,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<AppBloc, AppState>(
       listener: (context, state) {
-        debugPrint('$state');
         if (state is AppInitializedState) {
           Future.delayed(const Duration(seconds: 1)).then(
             (value) => Get.offNamed(

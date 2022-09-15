@@ -12,9 +12,9 @@ import 'package:todo_app/src/core/constants/board_screen_consts.dart';
 import 'package:todo_app/src/core/database/database.dart';
 import 'package:todo_app/src/core/errors/exceptions.dart';
 import 'package:todo_app/src/core/utils/fetch_schedule_time_method.dart';
+import 'package:todo_app/src/core/utils/notification_listener_service_callback.dart';
 import 'package:todo_app/src/data/data_sources/data_sources.dart';
 import 'package:todo_app/src/data/models/task_model.dart';
-import 'package:todo_app/src/injection_container.dart';
 
 class NotificationProvider {
   static final _instance = NotificationProvider._internal();

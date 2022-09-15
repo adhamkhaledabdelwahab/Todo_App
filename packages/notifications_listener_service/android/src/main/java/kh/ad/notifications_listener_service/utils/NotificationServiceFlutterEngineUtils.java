@@ -1,44 +1,39 @@
 package kh.ad.notifications_listener_service.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 
 import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.view.FlutterCallbackInformation;
 
 public class NotificationServiceFlutterEngineUtils {
-    private static final String FlutterEngineKey = "kh.ad.notifications_listener_service/FlutterEngineKey";
+//    private static final String FlutterEngineKey = "kh.ad.notifications_listener_service/FlutterEngineKey";
 
-    public static FlutterEngine updateEngine(@NonNull Context context, boolean state) {
-        FlutterEngine engine = state ? getEngine() : null;
-        if (engine == null) {
-            engine = new FlutterEngine(context);
-            // Define a DartEntrypoint
-            DartExecutor.DartEntrypoint entrypoint =
-                    DartExecutor.DartEntrypoint.createDefault();
-            // Execute the DartEntrypoint within the FlutterEngine.
-            engine.getDartExecutor().executeDartEntrypoint(entrypoint);
+    @SuppressLint("LongLogTag")
+    public static FlutterEngine updateEngine(@NonNull Context context) {
+        FlutterEngine engine = null;
+        engine = new FlutterEngine(context);
+        long callback = context.getSharedPreferences("NotificationCallback",
+                Context.MODE_PRIVATE).getLong("OnReceiveNotification", 0L);
+        if (callback != 0L) {
+            FlutterCallbackInformation callbackInformation =
+                    FlutterCallbackInformation.lookupCallbackInformation(callback);
+            DartExecutor.DartCallback dartCallback = new DartExecutor
+                    .DartCallback(context.getAssets(),
+                    context.getPackageCodePath(), callbackInformation);
+            engine.getDartExecutor().executeDartCallback(dartCallback);
         }
+
 
         if (!engine.getAccessibilityChannel().flutterJNI.isAttached()) {
             FlutterInjector.instance().flutterLoader().startInitialization(context);
             FlutterInjector.instance().flutterLoader().ensureInitializationComplete(context, new String[]{});
             engine.getAccessibilityChannel().flutterJNI.attachToNative();
         }
-
-        cacheEngine(engine);
-
         return engine;
-    }
-
-    private static FlutterEngine getEngine() {
-        return FlutterEngineCache.getInstance().get(FlutterEngineKey);
-    }
-
-    public static void cacheEngine(FlutterEngine engine) {
-        FlutterEngineCache.getInstance().put(FlutterEngineKey, engine);
     }
 }

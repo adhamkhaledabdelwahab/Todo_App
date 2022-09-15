@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 import 'device_info.dart';
@@ -15,13 +15,12 @@ class NotificationServicePlugin {
 
   final MethodChannel _onNotificationChannel = const MethodChannel(
       "notifications_listener_service/RUN_DART_BACKGROUND_METHOD");
-  final MethodChannel _runNativeBackgroundChannel = const MethodChannel(
-      "notifications_listener_service/RUN_NATIVE_BACKGROUND_METHOD");
   final MethodChannel _runNativeForegroundChannel = const MethodChannel(
       "notifications_listener_service/RUN_NATIVE_FOREGROUND_METHOD");
   final String _permissionGrantedMethod = "isNotificationPermissionGranted";
   final String _requestPermissionMethod = "requestNotificationPermission";
   final String _getDeviceInfoMethod = "getDeviceInfo";
+  final String _registerNotificationCallback = "registerNotificationCallback";
   final String _channelNameExistsMethod = "isExist";
 
   NotificationServicePlugin._constructor();
@@ -30,18 +29,18 @@ class NotificationServicePlugin {
     debugPrint('\x1B[31m$text\x1B[0m');
   }
 
-  Future<MethodChannel> _testWhichChannel() async {
+  Future<MethodChannel?> _testWhichChannel() async {
     try {
       await _runNativeForegroundChannel.invokeMethod(_channelNameExistsMethod);
       return _runNativeForegroundChannel;
     } catch (e) {
-      return _runNativeBackgroundChannel;
+      return null;
     }
   }
 
   Future<bool> _isPermissionGranted() async {
     return await (await _testWhichChannel())
-        .invokeMethod(_permissionGrantedMethod) as bool;
+        ?.invokeMethod(_permissionGrantedMethod) as bool;
   }
 
   Future<bool> isServicePermissionGranted() async {
@@ -57,7 +56,7 @@ class NotificationServicePlugin {
 
   Future<void> _requestPermission() async {
     return await (await _testWhichChannel())
-        .invokeMethod(_requestPermissionMethod);
+        ?.invokeMethod(_requestPermissionMethod);
   }
 
   Future<void> requestServicePermission() async {
@@ -78,7 +77,8 @@ class NotificationServicePlugin {
   }
 
   Future _getDeviceInfo() async {
-    return await (await _testWhichChannel()).invokeMethod(_getDeviceInfoMethod);
+    return await (await _testWhichChannel())
+        ?.invokeMethod(_getDeviceInfoMethod);
   }
 
   Future<DeviceInfo?> getDeviceInfo() async {
@@ -91,29 +91,42 @@ class NotificationServicePlugin {
     return null;
   }
 
-  void registerCallBackHandler(EventCallbackFunc callback) {
+  Future<void> _registerNotificationReceiverCallback(int handler) async {
+    return await (await _testWhichChannel())
+        ?.invokeMethod(_registerNotificationCallback, handler);
+  }
+
+  Future<void> _registerNotificationCallbackHandler(int handler) async {
     try {
-      _onNotificationChannel.setMethodCallHandler((call) {
-        final result = _registerCallBackHandler(callback, call);
-        return Future.value(result);
-      });
+      return await _registerNotificationReceiverCallback(handler);
     } catch (e) {
-      debugPrint('$e');
+      _printError(
+        "Registering Notifications Listener Service Callback Error: $e",
+      );
     }
   }
 
-  Future<void> initialize(EventCallbackFunc callbackHandler) async {
+  Future<void> initialize(Function callbackHandler) async {
     CallbackHandle? callbackTest =
         PluginUtilities.getCallbackHandle(callbackHandler);
     if (callbackTest == null) {
       throw Exception(
           "The callbackDispatcher needs to be either a static function or a top level function to be accessible as a Flutter entry point.");
     }
-    registerCallBackHandler(callbackHandler);
+    _registerNotificationCallbackHandler(callbackTest.toRawHandle());
     await requestPermissionsIfDenied();
   }
 
-  bool _registerCallBackHandler(EventCallbackFunc callback, MethodCall call) {
+  void executeNotificationListener(EventCallbackFunc callback) {
+    WidgetsFlutterBinding.ensureInitialized();
+    DartPluginRegistrant.ensureInitialized();
+    _onNotificationChannel.setMethodCallHandler((call) {
+      final result = _onNotificationStateChanges(callback, call);
+      return Future.value(result);
+    });
+  }
+
+  bool _onNotificationStateChanges(EventCallbackFunc callback, MethodCall call) {
     try {
       NotificationEvent evt = NotificationEvent.newEvent(call.arguments);
       callback(evt);

@@ -1,7 +1,6 @@
 package kh.ad.notifications_listener_service.models;
 
 import android.os.Build;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;

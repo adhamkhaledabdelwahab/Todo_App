@@ -25,7 +25,7 @@ class _ScheduledTasksScreenState extends State<ScheduledTasksScreen> {
             context,
           ).then(
             (value) => AppBloc.get(context).add(
-              AppUpdateAppLaunchTaskEvent(null),
+              AppUpdateSelectedTaskNotificationEvent(null),
             ),
           );
         }
