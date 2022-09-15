@@ -376,9 +376,9 @@ packages:
   notifications_listener_service:
     dependency: "direct main"
     description:
-      path: "packages/notifications_listener_service"
-      relative: true
-    source: path
+      name: notifications_listener_service
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.0.1"
   path:
     dependency: "direct main"

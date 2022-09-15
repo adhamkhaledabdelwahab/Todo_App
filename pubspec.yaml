@@ -27,8 +27,7 @@ dependencies:
   badges: ^2.0.3
   audioplayers: any
   file_picker: any
-  notifications_listener_service:
-    path: packages/notifications_listener_service
+  notifications_listener_service: ^0.0.1
 
 dev_dependencies:
   flutter_test:
