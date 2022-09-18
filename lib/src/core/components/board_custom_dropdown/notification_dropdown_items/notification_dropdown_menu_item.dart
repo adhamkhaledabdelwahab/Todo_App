@@ -26,38 +26,42 @@ class NotificationDropdownMenuItemWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                taskModel.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-              ),
-              if (taskModel.description.isNotEmpty)
-                const SizedBox(
-                  height: 5,
-                ),
-              if (taskModel.description.isNotEmpty)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Text(
-                  taskModel.description,
+                  taskModel.title,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
                 ),
-            ],
+                if (taskModel.description.isNotEmpty)
+                  const SizedBox(
+                    height: 5,
+                  ),
+                if (taskModel.description.isNotEmpty)
+                  Text(
+                    taskModel.description,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400),
+                  ),
+              ],
+            ),
           ),
           Row(
             children: [
               Column(
                 children: [
                   Text(
-                    DateFormat('dd MMMM, yyyy').format(
+                    DateFormat('dd MMM, yyyy').format(
                       DateFormat.yMd().parse(taskModel.date),
                     ),
                     style: const TextStyle(
